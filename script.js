@@ -16,7 +16,7 @@ let checkCargoMass = (value) => {
 
 window.addEventListener('load', function () {
    let form = document.querySelector('form');
-   form.addEventListener('submit', function (event) {
+   form.addEventListener('submit', async function (event){
       let pilotName = document.querySelector('input[name=pilotName]');
       let copilotName = document.querySelector('input[name=copilotName]');
       let fuelLevel = document.querySelector('input[name=fuelLevel]');
@@ -37,7 +37,6 @@ window.addEventListener('load', function () {
       if (pilotName.value === "" || copilotName.value === "" || fuelLevel.value === "" || cargoMass.value === "") {
          alert('all fields are required');
       }
-   })
 
       if (isNaN(cargoMassNumber)) {
          console.log(cargoMassNumber)
@@ -49,11 +48,11 @@ window.addEventListener('load', function () {
       }
       // console.log(checkFuel(fuelLevel.value));
       // console.log(checkCargoMass(cargoMass.value));
+      let fi = document.getElementById('faultyItems')
+      let fs = document.getElementById('cargoStatus')
+      let ls = document.getElementById('launchStatus');
 
       if (checkFuel(fuelLevelNumber)) {
-         let fi = document.getElementById('faultyItems')
-         let fs = document.getElementById('fuelStatus')
-         let ls = document.getElementById('launchStatus');
          fi.style.visibility = 'visible';
          fs.innerHTML = 'There is not enough fuel for the journey';
          ls.innerHTML = 'Shuttle is not for launch';
@@ -61,9 +60,6 @@ window.addEventListener('load', function () {
       }
 
       else if (checkCargoMass(cargoMassNumber)) {
-         let fi = document.getElementById('faultyItems')
-         let fs = document.getElementById('cargoStatus')
-         let ls = document.getElementById('launchStatus');
          fi.style.visibility = 'visible';
          fs.innerHTML = 'There is to much mass for the shuttle to take of';
          ls.innerHTML = 'Shuttle is not for launch';
@@ -71,11 +67,34 @@ window.addEventListener('load', function () {
 
       }
       else{
-         ls.innerHTML = 'Shuttle is not for launch';
+         ls.innerHTML = 'Shuttle is ready for launch';
          ls.style.color = 'green';
        }
        
+      //  fetch("https://handlers.education.launchcode.org/static/planets.json").then(function (response) {
+      //    response.json().then(function (json) { });
+       let json = await fetch("https://handlers.education.launchcode.org/static/planets.json").then(data => { return data.json() } )
+      //  let json = data.json()
+      //  console.log (data)
+       console.log (json)
+
+         const div = document.getElementById("missionTarget");
+         console.log (div)
+         div.innerHTML = `
+      <h2>Mission Destination</h2>
+         <ol>
+            <li>Name: ${json[5].name}</li>
+            <li>Diameter: ${json[5].diameter}</li>
+            <li>Star: ${json[5].star}</li>
+            <li>Distance from Earth: ${json[5].distance}</li>
+            <li>Number of Moons: ${json[5].moons}</li>
+         </ol>
+            <img src="${json[5].image}"> 
+            `;
+
+      });
     });
+   
 
 
 
@@ -84,22 +103,22 @@ window.addEventListener('load', function () {
 
 // This block of code shows how to format the HTML once you fetch some planetary JSON!
 
-window.addEventListener("load", function () {
-   fetch("https://handlers.education.launchcode.org/static/planets.json").then(function (response) {
-      response.json().then(function (json) {
-         const div = document.getElementById("missonTarget");
-         div.innerHTML = `
-      <h2>Mission Destination</h2>
-         <ol>
-            <li>Name: ${json.name}</li>
-            <li>Diameter: ${json.diameter}</li>
-            <li>Star: ${json.stars}</li>
-            <li>Distance from Earth: ${json.earth}</li>
-            <li>Number of Moons: ${json.moon}</li>
-         </ol>
-            <img src="${json.image}"> 
-            `;
-      });
-   });
-});
+// window.addEventListener("load", function () {
+//    fetch("https://handlers.education.launchcode.org/static/planets.json").then(function (response) {
+//       response.json().then(function (json) {
+//          const div = document.getElementById("missonTarget");
+//          div.innerHTML = `
+//       <h2>Mission Destination</h2>
+//          <ol>
+//             <li>Name: ${json.name}</li>
+//             <li>Diameter: ${json.diameter}</li>
+//             <li>Star: ${json.stars}</li>
+//             <li>Distance from Earth: ${json.earth}</li>
+//             <li>Number of Moons: ${json.moon}</li>
+//          </ol>
+//             <img src="${json.image}"> 
+//             `;
+//       });
+//    });
+// });
 // console.log(response)
